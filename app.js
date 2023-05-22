@@ -1,18 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose')
+const router = require('./routes')
+
+const bodyParser = require('body-parser')
 
 const { PORT = 3000 } = process.env;
 
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-    useFindAndModify: false
-})
-app.get('/', (req, res) => {
-  res.send('HI1');
+app.use(express.json());
+app.use((req, res, next) => {
+  req.user = {
+    _id: '646a4983092ac7c6b4de1a7a' // вставьте сюда _id созданного в предыдущем пункте пользователя
+  };
+
+  next();
 });
+
+app.use(router);
 
 app.listen(PORT, () => {
   console.log('Server is running on 3000');
