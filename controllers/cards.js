@@ -11,7 +11,6 @@ const getCards = (req, res) => {
 const createCards = (req, res) => {
   Card.create({
     owner: req.user._id,
-    likes: req.body.likes.length,
     ...req.body
   })
     .then((card) => {
@@ -31,8 +30,30 @@ const deleteCard = (req, res) => {
     .catch((err) => res.status(500).send({ message: err.message }));
 }
 
+const putCardLike = (req, res) => {
+  Card.findByIdAndUpdate(req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true })
+    .then((cardLike) => {
+      res.send(cardLike)
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
+const deleteCardLike = (req, res) => {
+  Card.findByIdAndUpdate(req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true })
+    .then((cardLike) => {
+      res.send(cardLike)
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
 module.exports = {
   createCards,
   getCards,
-  deleteCard
+  deleteCard,
+  putCardLike,
+  deleteCardLike
 }
