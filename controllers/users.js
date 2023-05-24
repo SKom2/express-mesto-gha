@@ -1,6 +1,7 @@
-const User = require('../models/user')
-const { SUCCESS, CREATE, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require("../constants/ErrorStatuses");
-
+const User = require('../models/user');
+const {
+  SUCCESS, CREATE, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR
+} = require('../constants/ErrorStatuses');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -11,28 +12,28 @@ const getUsers = (req, res) => {
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.message,
-        stack: err.stack,
-      })
+        stack: err.stack
+      });
     });
-}
+};
 
 const createUser = async (req, res) => {
   try {
-    const user = await User.create(req.body)
-    return res.status(CREATE).send(user)
+    const user = await User.create(req.body);
+    return res.status(CREATE).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
       return res.status(BAD_REQUEST).send({
         message: 'Incorrect data sent'
-      })
+      });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
       err: err.message,
-      stack: err.stack,
-    })
+      stack: err.stack
+    });
   }
-}
+};
 
 const getUserId = (req, res) => {
   User.findById(req.params._id)
@@ -43,79 +44,79 @@ const getUserId = (req, res) => {
       res.status(SUCCESS).send(user);
     })
     .catch((err) => {
-      if (err.message === 'NotFound'){
+      if (err.message === 'NotFound') {
         res.status(NOT_FOUND).send({
-          message: 'User Not Found',
+          message: 'User Not Found'
         });
         return;
       }
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.message,
-        stack: err.stack,
-      })
-    })
-}
+        stack: err.stack
+      });
+    });
+};
 
 const updateUser = async (req, res) => {
   try {
     if (!req.body.name || !req.body.about) {
       return res.status(BAD_REQUEST).send({
-        message: 'Incorrect data sent',
+        message: 'Incorrect data sent'
       });
     }
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name: req.body.name, about: req.body.about },
-      { new: true })
+      { new: true }
+    )
       .orFail(() => {
         throw new Error('NotFound');
-      })
-    return res.status(CREATE).send(user)
-  } catch (err) {
-    if (err.message === 'NotFound'){
-      res.status(NOT_FOUND).send({
-        message: 'User Not Found',
       });
-      return;
+    return res.status(SUCCESS).send(user);
+  } catch (err) {
+    if (err.message === 'NotFound') {
+      res.status(NOT_FOUND).send({
+        message: 'User Not Found'
+      });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
       err: err.message,
-      stack: err.stack,
-    })
+      stack: err.stack
+    });
   }
-}
+};
 
 const updateUserAvatar = async (req, res) => {
   try {
     if (!req.body.avatar) {
       return res.status(BAD_REQUEST).send({
-        message: 'Incorrect data sent',
+        message: 'Incorrect data sent'
       });
     }
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { avatar: req.body.avatar },
-      { new: true })
+      { new: true }
+    )
       .orFail(() => {
         throw new Error('NotFound');
-      })
-    return res.status(CREATE).send(user)
-  } catch (err) {
-    if (err.message === 'NotFound'){
-      res.status(NOT_FOUND).send({
-        message: 'User Not Found',
       });
-      return;
+    return res.status(SUCCESS).send(user);
+  } catch (err) {
+    if (err.message === 'NotFound') {
+      res.status(NOT_FOUND).send({
+        message: 'User Not Found'
+      });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
       err: err.message,
-      stack: err.stack,
-    })
+      stack: err.stack
+    });
   }
-}
+};
 
 module.exports = {
   getUsers,
@@ -123,4 +124,4 @@ module.exports = {
   createUser,
   updateUser,
   updateUserAvatar
-}
+};
