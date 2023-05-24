@@ -49,11 +49,14 @@ const deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(INTERNAL_SERVER_ERROR).send({
+      if (err.name === 'CastError' && err.kind === 'ObjectId') {
+        return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+      }
+      return res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.message,
         stack: err.stack
-      })
+      });
     });
 };
 
@@ -65,17 +68,19 @@ const putCardLike = async (req, res) => {
         message: 'User Not Found'
       });
     }
+
     const cardLike = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true }
-    )
-    return res.status(CREATE).send(cardLike);
+    );
+    if (!cardLike) {
+      return res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+    }
+    return res.status(SUCCESS).send(cardLike);
   } catch (err) {
-    if (!req.params._id) {
-      res.status(NOT_FOUND).send({
-        message: 'Card ID Not Found'
-      });
+    if (err.name === 'CastError' && err.kind === 'ObjectId') {
+      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
@@ -97,13 +102,14 @@ const deleteCardLike = async (req, res) => {
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true }
-    )
+    );
+    if (!cardLike) {
+      return res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+    }
     return res.status(SUCCESS).send(cardLike);
   } catch (err) {
-    if (!req.params._id) {
-      res.status(NOT_FOUND).send({
-        message: 'Card ID Not Found'
-      });
+    if (err.name === 'CastError' && err.kind === 'ObjectId') {
+      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
