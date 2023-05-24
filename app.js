@@ -15,9 +15,6 @@ app.use((req, res, next) => {
 
   next();
 });
-app.use((req, res) => {
-  res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
-});
 app.use(router);
 
 app.listen(PORT, () => {
