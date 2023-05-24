@@ -2,25 +2,7 @@
   "extends": "airbnb-base",
   "rules": {
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
-    "comma-dangle": ["error", "never"]
+    "comma-dangle": ["error", "never"],
+    "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }]
   }
-//  "rules": {
-//    "camelcase": [
-//      "error",
-//      {
-//        "ignoreDestructuring": true,
-//        "properties": "never",
-//        "ignore": ["_id"]
-//      }
-//    ],
-//    "trailing-comma": [true, {
-//      "singleline": "never",
-//      "multiline": {
-//        "objects": "always",     // <==================
-//        "arrays": "always",
-//        "functions": "never",
-//        "typeLiterals": "ignore"
-//      }
-//    }]
-//  }
 }

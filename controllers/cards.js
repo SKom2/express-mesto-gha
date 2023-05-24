@@ -50,10 +50,9 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' && err.kind === 'ObjectId') {
-        res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
-        return;
+        return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
       }
-      res.status(INTERNAL_SERVER_ERROR).send({
+      return res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.message,
         stack: err.stack
@@ -81,7 +80,7 @@ const putCardLike = async (req, res) => {
     return res.status(SUCCESS).send(cardLike);
   } catch (err) {
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
-      res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
@@ -110,7 +109,7 @@ const deleteCardLike = async (req, res) => {
     return res.status(SUCCESS).send(cardLike);
   } catch (err) {
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
-      res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
     }
     return res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
