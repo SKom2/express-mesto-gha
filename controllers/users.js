@@ -37,23 +37,21 @@ const createUser = async (req, res) => {
 
 const getUserId = (req, res) => {
   User.findById(req.params._id)
-    .orFail(() => {
-      throw new Error('NotFound');
-    })
     .then((user) => {
+      if (!user) {
+        res.status(NOT_FOUND).send({ message: 'User Not Found' });
+        return;
+      }
       res.status(SUCCESS).send(user);
     })
     .catch((err) => {
-      if (err.message === 'NotFound') {
-        res.status(NOT_FOUND).send({
-          message: 'User Not Found'
-        });
+      if (err.name === 'CastError' && err.kind === 'ObjectId') {
+        res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
         return;
       }
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
-        err: err.message,
-        stack: err.stack
+        error: err.message
       });
     });
 };
