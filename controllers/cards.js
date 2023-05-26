@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const User = require('../models/user');
 const {
@@ -12,7 +13,6 @@ const getCards = (req, res) => {
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
-        err: err.message,
         stack: err.stack
       });
     });
@@ -24,16 +24,16 @@ const createCards = async (req, res) => {
       owner: req.user._id,
       ...req.body
     });
-    return res.status(CREATE).send(card);
+    res.status(CREATE).send(card);
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(BAD_REQUEST).send({
+    if (err instanceof mongoose.Error.ValidationError) {
+      res.status(BAD_REQUEST).send({
         message: 'Incorrect data sent'
       });
+      return;
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({
+    res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
-      err: err.message,
       stack: err.stack
     });
   }
@@ -44,17 +44,17 @@ const deleteCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND).send({ message: 'Card Id not found' });
-      } else {
-        res.status(SUCCESS).send(card);
+        return;
       }
+      res.status(SUCCESS).send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError' && err.kind === 'ObjectId') {
-        return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+      if (err instanceof mongoose.Error.CastError) {
+        res.status(BAD_REQUEST).send({ message: 'Invalid Card Id' });
+        return;
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({
+      res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Internal Server Error',
-        err: err.message,
         stack: err.stack
       });
     });
@@ -62,29 +62,23 @@ const deleteCard = (req, res) => {
 
 const putCardLike = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(BAD_REQUEST).send({
-        message: 'User Not Found'
-      });
-    }
-
     const cardLike = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true }
     );
     if (!cardLike) {
-      return res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+      res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+      return;
     }
-    return res.status(SUCCESS).send(cardLike);
+    res.status(SUCCESS).send(cardLike);
   } catch (err) {
-    if (err.name === 'CastError' && err.kind === 'ObjectId') {
-      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+    if (err instanceof mongoose.Error.CastError) {
+      res.status(BAD_REQUEST).send({ message: 'Invalid Card Id' });
+      return;
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({
+    res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
-      err: err.message,
       stack: err.stack
     });
   }
@@ -92,28 +86,23 @@ const putCardLike = async (req, res) => {
 
 const deleteCardLike = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(BAD_REQUEST).send({
-        message: 'User Not Found'
-      });
-    }
     const cardLike = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true }
     );
     if (!cardLike) {
-      return res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+      res.status(NOT_FOUND).send({ message: 'Card Not Found' });
+      return;
     }
-    return res.status(SUCCESS).send(cardLike);
+    res.status(SUCCESS).send(cardLike);
   } catch (err) {
-    if (err.name === 'CastError' && err.kind === 'ObjectId') {
-      return res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
+    if (err instanceof mongoose.Error.CastError) {
+      res.status(BAD_REQUEST).send({ message: 'Invalid Card Id' });
+      return;
     }
-    return res.status(INTERNAL_SERVER_ERROR).send({
+    res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Internal Server Error',
-      err: err.message,
       stack: err.stack
     });
   }
