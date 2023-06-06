@@ -3,8 +3,10 @@ const {
   NOT_FOUND,
   SUCCESS,
   BAD_REQUEST,
+  CONFLICT,
   INTERNAL_SERVER_ERROR
 } = require('../constants/ErrorStatuses');
+const MONGO_DUPLICATE_KEY_ERROR = 11000;
 
 const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
   handler(req, res)
@@ -16,6 +18,10 @@ const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
       res.status(successStatus).send(result);
     })
     .catch((err) => {
+      if (err.code === MONGO_DUPLICATE_KEY_ERROR) {
+        res.status(CONFLICT).send({ message: 'This user already exists' })
+        return;
+      }
       if (err instanceof mongoose.Error.CastError) {
         res.status(BAD_REQUEST).send({ message: 'Invalid User Id' });
         return;
