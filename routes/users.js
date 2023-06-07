@@ -7,7 +7,6 @@ const {
   updateUserAvatar
 } = require('../controllers/users');
 
-
 router.get('/', getUsers);
 router.get('/me', getUser);
 router.get('/:_id', getUserId);

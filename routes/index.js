@@ -6,7 +6,7 @@ const userController = require('../controllers/users');
 const auth = require('../middlewares/auth');
 const validateUserBody = require('../middlewares/validate');
 
-router.post('/signup', userController.createUser);
+router.post('/signup', validateUserBody, userController.createUser);
 router.post('/signin', userController.login);
 
 router.use(auth);
