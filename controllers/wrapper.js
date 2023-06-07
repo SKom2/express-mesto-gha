@@ -6,6 +6,7 @@ const {
   CONFLICT,
   INTERNAL_SERVER_ERROR
 } = require('../constants/ErrorStatuses');
+
 const MONGO_DUPLICATE_KEY_ERROR = 11000;
 
 const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
@@ -19,7 +20,7 @@ const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
     })
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_KEY_ERROR) {
-        res.status(CONFLICT).send({ message: 'This user already exists' })
+        res.status(CONFLICT).send({ message: 'This user already exists' });
         return;
       }
       if (err instanceof mongoose.Error.CastError) {
