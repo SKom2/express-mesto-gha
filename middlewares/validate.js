@@ -10,4 +10,14 @@ const validateUserBody = celebrate({
   })
 });
 
-module.exports = validateUserBody;
+const validateCardBody = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required()
+  })
+});
+
+module.exports = {
+  validateUserBody,
+  validateCardBody
+};

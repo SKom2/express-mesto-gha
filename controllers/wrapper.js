@@ -13,6 +13,7 @@ const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
   handler(req, res)
     .then((result) => {
       if (!result) {
+        console.log(result);
         res.status(NOT_FOUND).send({ message: 'Card Id not found' });
         return;
       }
