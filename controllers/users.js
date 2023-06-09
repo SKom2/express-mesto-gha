@@ -44,7 +44,7 @@ const getUsers = wrapper(() => User.find({}));
 const getUser = wrapper((req) => {
   const currentUserId = req.user._id;
 
-  return User.find({ _id: currentUserId });
+  return User.findOne({ _id: currentUserId });
 });
 
 const getUserId = wrapper((req) => User.findById(req.params._id));
