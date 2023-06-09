@@ -53,11 +53,14 @@ const deleteCard = (req, res) => {
     });
 };
 
-const putCardLike = wrapper((req) => Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $addToSet: { likes: req.user._id } },
-  { new: true, runValidators: true }
-));
+const putCardLike = wrapper((req) => {
+  const { cardId } = req.params;
+  return Card.findByIdAndUpdate(
+    cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true }
+  );
+});
 
 const deleteCardLike = wrapper((req) => Card.findByIdAndUpdate(
   req.params.cardId,
