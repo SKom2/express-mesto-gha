@@ -5,6 +5,7 @@ const router = require('./routes');
 
 const { PORT = 3000 } = process.env;
 
+mongoose.set('toJSON', { useProjection: true });
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 const app = express();
 
