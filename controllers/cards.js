@@ -32,12 +32,18 @@ const deleteCard = (req, res) => {
         return;
       }
 
-      return Card.findByIdAndDelete(cardId);
-    })
-    .then((result) => {
-      if (result) {
-        res.status(SUCCESS).send(result);
-      }
+      Card.findByIdAndDelete(cardId)
+        .then((result) => {
+          if (result) {
+            res.status(SUCCESS).send(result);
+          }
+        })
+        .catch((err) => {
+          res.status(INTERNAL_SERVER_ERROR).send({
+            message: 'Internal Server Error',
+            stack: err.stack
+          });
+        });
     })
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({

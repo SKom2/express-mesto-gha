@@ -9,6 +9,7 @@ const {
 } = require('../constants/ErrorStatuses');
 
 const SALT_ROUNDS = 10;
+const SECRET_KEY = 'some-secret-key';
 
 const createUser = (req, res) => {
   const {
@@ -29,7 +30,7 @@ const login = (req, res) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        'some-secret-key',
+        SECRET_KEY,
         { expiresIn: '7d' }
       );
       res.status(SUCCESS).send({ token });
