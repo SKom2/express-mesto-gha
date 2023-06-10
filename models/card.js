@@ -5,7 +5,12 @@ const cardSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
+    validate: {
+      validator(value) {
+        return /^https?:\/\/.*$/.test(value);
+      }
+    }
   },
   link: {
     type: String,

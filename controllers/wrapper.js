@@ -34,7 +34,7 @@ const wrapper = (handler, successStatus = SUCCESS) => (req, res) => {
         return;
       }
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Internal Server Error',
+        message: 'An error occurred on the server',
         stack: err.stack
       });
     });

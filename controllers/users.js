@@ -9,7 +9,7 @@ const {
 } = require('../constants/ErrorStatuses');
 
 const SALT_ROUNDS = 10;
-const SECRET_KEY = 'some-secret-key';
+const { SECRET_KEY } = process.env;
 
 const createUser = (req, res) => {
   const {

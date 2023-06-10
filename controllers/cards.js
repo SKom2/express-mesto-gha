@@ -40,14 +40,14 @@ const deleteCard = (req, res) => {
         })
         .catch((err) => {
           res.status(INTERNAL_SERVER_ERROR).send({
-            message: 'Internal Server Error',
+            message: 'An error occurred on the server',
             stack: err.stack
           });
         });
     })
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Internal Server Error',
+        message: 'An error occurred on the server',
         stack: err.stack
       });
     });
