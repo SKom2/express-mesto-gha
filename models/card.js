@@ -5,16 +5,16 @@ const cardSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
+    required: true
+  },
+  link: {
+    type: String,
     required: true,
     validate: {
       validator(value) {
         return /^https?:\/\/.*$/.test(value);
       }
     }
-  },
-  link: {
-    type: String,
-    required: true
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
